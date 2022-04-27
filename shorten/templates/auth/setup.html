@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero is-primary is-fullheight-with-navbar">
+    <div class="hero-body">
+        <div class="container">
+            <div class="column is-4 is-offset-4">
+                <h3 class="title">Setup admin account</h3>
+                <div class="box">
+                    {% with messages = get_flashed_messages() %}
+                    {% for message in messages %}
+                    <div class="notification is-danger">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endwith %}
+                    <form action="" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ render_field_full(form.username, icon="fas fa-user") }}
+                        {{ render_field_full(form.password, icon="fas fa-key") }}
+                        {{ render_field_full(form.password2, icon="fas fa-key") }}
+                        {{ render_field(form.submit, style="is-primary") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
