@@ -1,5 +1,5 @@
 from flask import url_for, render_template, redirect, flash, request
-from flask_login import login_user
+from flask_login import login_user, logout_user
 from werkzeug.urls import url_parse
 from . import auth
 from .. import db
@@ -24,6 +24,12 @@ def login():
                 next_page = url_for('main.index')
             return redirect(next_page)
     return render_template('auth/login.html', form=form)
+
+@auth.route('/logout')
+def logout():
+    logout_user()
+    return redirect('auth.login')
+
 
 @auth.route('/setup', methods=['GET', 'POST'])
 def setup():
