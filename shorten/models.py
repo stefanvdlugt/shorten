@@ -35,3 +35,9 @@ class User(UserMixin, db.Model):
 def load_user(id):
     return User.query.get(bytes.fromhex(id))
 
+class ShortenedURL(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    slug = db.Column(db.String(32), index=True, unique=True)
+    dest = db.Column(db.String(2000))
+    creation_date = db.Column(db.DateTime())
+

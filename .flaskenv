@@ -1,1 +1,1 @@
-FLASK_APP=shorten
+FLASK_APP=run.py

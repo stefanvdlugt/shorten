@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+<h1 class="title">Add shortened URL</h1>
+<form action="" method="post" class="addurlform">
+    {{ form.hidden_tag() }}
+    {{ render_field_full(form.dest) }}
+    {{ render_field_full(form.custom) }}
+    <div class="field" id="customurl-wrapper" {% if form.custom.data=="random" %} style="display:none;" {% endif%}>
+        <div class="field has-addons">
+        <p class="control">
+            <a class="button is-static" id="customurl-ext">
+                example.com/
+            </a>
+        </p>
+        <p class="control">
+            {% if form.customurl.errors %}
+            {{ form.customurl(class_="input is-danger") }}
+            {% else %}
+            {{ form.customurl(class_="input") }}
+            {% endif %}
+        </p>
+        </div>
+        {% for e in form.customurl.errors %}
+        <p class="help is-danger">{{ e }}</p>
+        {% endfor %}
+    </div>
+
+    {{ render_field(form.submit, style="is-primary") }}
+
+    <div class="field has-addons">
+    </div>
+</form>
+</section>
+
+<section class="section">
+<h1 class="title">Shortened URLS</h1>
+<table class="table is-hoverable is-fullwidth">
+    <thead>
+        <tr>
+            <th style="width:.1%;"></th>
+            <th>Shortened URL</th>
+            <th>Destination</th>
+            <th style="width:.1%;"></th>
+        </tr>
+    </thead>
+    {% for u in urls %}
+    {% include '_url_row.html' %}
+    {% endfor %}
+</table>
+</section>
+
+
+<script type="text/javascript">
+    $("form.addurlform input:radio").click(function(){
+        if ($(this).val() == 'manual') {
+            $('#customurl-wrapper').show(200);
+            //$('#customurl').prop('disabled', false);
+            //$('#customurl-ext').prop('disabled', false);
+        } else {
+            $('#customurl-wrapper').hide(200);
+            //$('#customurl').prop('disabled', true);
+            //$('#customurl-ext').prop('disabled', false);
+        }
+    });
+</script>
+{% endblock %}
