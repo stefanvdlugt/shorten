@@ -154,6 +154,25 @@
             $("#span-btn-multidelete").find("input").click();
         }
     });
+    
+    // Allow the user to shift+click to select multiple checkboxes at the same time.
+    // https://stackoverflow.com/a/44510561
+    var lastChecked = null;
+    $(function() {
+        var $checkboxes = $('input.urlcheckbox');
+        $checkboxes.click(function(e) {
+            if (!lastChecked) {
+                lastChecked = this;
+                return;
+            }
+            if (e.shiftKey) {
+                var start = $checkboxes.index(this);
+                var end = $checkboxes.index(lastChecked);
+                $checkboxes.slice(Math.min(start,end), Math.max(start,end)+1).prop("checked", this.checked);
+            }
+            lastChecked = this;
+        });
+    });
 
     
 </script>
