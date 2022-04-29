@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import StringField, RadioField, SubmitField
+from wtforms.fields import StringField, RadioField, SubmitField, HiddenField
 from wtforms.validators import DataRequired, ValidationError
+from ..models import ShortenedURL
 import re
 
 class URLForm(FlaskForm):
@@ -26,3 +27,11 @@ class URLForm(FlaskForm):
                     'A-Z, a-z, 0-9, ._-'
                 ))
 
+class DeleteURLForm(FlaskForm):
+    slug = HiddenField(validators=[DataRequired()])
+    submit = SubmitField('Delete')
+
+    def validate_slug(form, field):
+        slug = field.data
+        if ShortenedURL.query.filter_by(slug=slug).count() == 0:
+            raise ValidationError("This URL does not exist.")

@@ -54,6 +54,12 @@
 </table>
 </section>
 
+<form hidden action="" method="post" id="delurlform">
+    {{ delform.csrf_token() }}
+    {{ delform.slug(class_="delslug") }}
+    {{ delform.submit }}
+</form>
+
 
 <script type="text/javascript">
     $("form.addurlform input:radio").click(function(){
@@ -94,6 +100,13 @@
         $(this).find("i").removeClass("fa-copy").addClass("fa-check");
         $(this).prop("title","Copied!");
         IconResetter.arm();
+    });
+    $("a.delete-url").click(function(){
+        var slug = $(this).data("slug");
+        if ( confirm(`Are you sure you want to delete the shortened url ${slug}?`) ) {
+            $("#delurlform input.delslug").val(slug);
+            $("#delurlform").submit();
+        }
     });
 </script>
 {% endblock %}

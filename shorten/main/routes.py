@@ -4,14 +4,23 @@ import random
 from shorten import db
 from shorten.models import ShortenedURL
 from . import main
-from .forms import URLForm
+from .forms import URLForm, DeleteURLForm
 from datetime import datetime
 
 @main.route('/', methods=['GET','POST'])
 @login_required
 def index():
     form = URLForm()
-    if form.validate_on_submit():
+    delform = DeleteURLForm(prefix='delete--')
+    
+    if delform.slug.data:
+        if delform.validate_on_submit():
+            su = ShortenedURL.query.filter_by(slug=delform.slug.data).first()
+            db.session.delete(su)
+            db.session.commit()
+        return redirect(url_for('main.index'))
+
+    elif form.submit.data and form.validate_on_submit():
         su = ShortenedURL()
         su.dest = form.dest.data
         if form.custom.data == 'random':
@@ -37,7 +46,7 @@ def index():
     base = current_app.config['SERVER_NAME'] + current_app.config['BASE_URL']
     if base[-1] != '/':
         base += '/'
-    return render_template('index.html', form=form, urls=urls, base=base)
+    return render_template('index.html', form=form, delform=delform, urls=urls, base=base)
 
 @main.route('/<slug>')
 def forward(slug):
