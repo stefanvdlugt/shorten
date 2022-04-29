@@ -32,3 +32,5 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.environ.get(
         'DATABASE_PATH', os.path.join(basedir, 'app.db'))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    PROXY_DEPTH = int(os.environ.get('PROXY_DEPTH',0))

@@ -3,6 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 db = SQLAlchemy()
 login = LoginManager()
@@ -15,6 +16,8 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     prefix = app.config['BASE_URL']
+
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=app.config['PROXY_DEPTH'])
 
     from .main import main
     app.register_blueprint(main, url_prefix=prefix)
