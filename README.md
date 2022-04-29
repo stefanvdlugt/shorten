@@ -1,10 +1,6 @@
 # shorten
 *a simple URL shortener written in Flask*
 
-- add, edit, and delete tasks
-- set deadlines
-- receive reminders by mail
-
 ## Installation and usage
 
 ### Using docker-compose (easiest)
