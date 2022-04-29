@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import StringField, RadioField, SubmitField, HiddenField
+from wtforms.fields import StringField, RadioField, SubmitField, HiddenField, SelectMultipleField
 from wtforms.validators import DataRequired, ValidationError
+from wtforms.widgets import ListWidget, CheckboxInput
 from ..models import ShortenedURL
 import re
 
@@ -37,3 +38,17 @@ class DeleteURLForm(FlaskForm):
         slug = field.data
         if ShortenedURL.query.filter_by(slug=slug).count() == 0:
             raise ValidationError("This URL does not exist.")
+
+class MultiCheckboxField(SelectMultipleField):
+    """
+    A multiple-select, except displays a list of checkboxes.
+
+    Iterating the field will produce subfields, allowing custom rendering of
+    the enclosed checkbox fields.
+    """
+    widget = ListWidget(prefix_label=False)
+    option_widget = CheckboxInput()
+
+class MultiSelectURLForm(FlaskForm):
+    boxes = MultiCheckboxField('Checked', validate_choice=False)
+    submit = SubmitField('Delete selected')

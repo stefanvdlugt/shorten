@@ -38,20 +38,37 @@
 </section>
 
 <section class="section">
-<h1 class="title">Shortened URLs</h1>
-<table class="table is-hoverable is-fullwidth">
-    <thead>
-        <tr>
-            <th style="width:.1%;"></th>
-            <th>Shortened URL</th>
-            <th>Destination</th>
-            <th style="width:.1%;"></th>
-        </tr>
-    </thead>
-    {% for u in urls %}
-    {% include '_url_row.html' %}
+    <h1 class="title">Shortened URLs</h1>
+    {% with messages = get_flashed_messages(category_filter=["select_error"]) %}
+    {% for message in messages %}
+    <div class="notification is-danger">{{ message }}</div>
     {% endfor %}
-</table>
+    {% endwith %}
+    <form action="" method="post" id="multiselectform">
+        {{ msform.hidden_tag() }}
+        <table class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th style="width:.1%;"></th>
+                    <th>Shortened URL</th>
+                    <th>Destination</th>
+                    <th style="width:.1%;"><input type="checkbox" id="selectall"></th>
+                    <th style="width:.1%;">
+                        <span hidden id="span-btn-multidelete">{{ msform.submit }}</span>
+                        <a hidden title="Delete selected" id="multidelete">
+                            <span class="icon has-text-danger">
+                                <i class="fas fa-times">
+                                </i>
+                            </span>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            {% for u,box in zip(urls,msform.boxes) %}
+            {% include '_url_row.html' %}
+            {% endfor %}
+        </table>
+    </form>
 </section>
 
 <form hidden action="" method="post" id="delurlform">
@@ -59,7 +76,6 @@
     {{ delform.slug(class_="delslug") }}
     {{ delform.submit }}
 </form>
-
 
 <script type="text/javascript">
     $("form.addurlform input:radio").click(function(){
@@ -108,5 +124,37 @@
             $("#delurlform").submit();
         }
     });
+
+    function updateCheckBoxes() {
+        if ( $("input.urlcheckbox:checked").length == 0 ){
+            $("#selectall").prop("indeterminate", false);
+            $("#selectall").prop("checked", false);
+            $("#multidelete").attr("hidden", true);
+        }
+        else if ( $("input.urlcheckbox:not(:checked)").length == 0 ){
+            $("#selectall").prop("indeterminate", false);
+            $("#selectall").prop("checked", true);
+            $("#multidelete").attr("hidden", false);
+        }
+        else {
+            $("#selectall").prop("indeterminate", true);
+            $("#selectall").prop("checked", false);
+            $("#multidelete").attr("hidden", false);
+        }
+    }
+    $(updateCheckBoxes);
+    $("input.urlcheckbox").change(updateCheckBoxes);
+    $("#selectall").change(function() {
+        $("input.urlcheckbox").prop("checked",$(this).prop("checked"));
+        $("#multidelete").attr("hidden",($(this).prop("checked")==false));
+    });
+    $("#multidelete").click(function(){
+        var cnt = $("input.urlcheckbox:checked").length;
+        if (confirm(`Are you sure you want to delete the ${cnt} selected items?`)){
+            $("#span-btn-multidelete").find("input").click();
+        }
+    });
+
+    
 </script>
 {% endblock %}
