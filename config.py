@@ -23,12 +23,12 @@ def get_secret_key():
             os.umask(um) # revert umask to original
     return key
 
-                            
 class Config(object):
     SERVER_NAME = os.environ.get('SERVER_NAME') or 'localhost:5000'
     BASE_URL = os.environ.get('BASE_URL') or ''
 
     SECRET_KEY = get_secret_key()
 
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir,'app.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.environ.get(
+        'DATABASE_PATH', os.path.join(basedir, 'app.db'))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
