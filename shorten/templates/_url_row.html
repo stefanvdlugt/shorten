@@ -1,5 +1,12 @@
 <tr>
-    <td></td>
+    <td>
+        <a title="Copy" class="copy-url" data-url="{{ url_for('main.forward', slug=u.slug, _external=True) }}">
+            <span class="icon has-text-grey">
+                <i class="fas fa-copy">
+                </i>
+            </span>
+        </a>
+    </td>
     <td><span class="has-text-grey-light">{{ base }}</span>{{ u.slug }}</td>
     <td>{{ u.dest }}</td>
     <td></td>
