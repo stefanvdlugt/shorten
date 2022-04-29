@@ -28,7 +28,7 @@ def login():
 @auth.route('/logout')
 def logout():
     logout_user()
-    return redirect('auth.login')
+    return redirect(url_for('auth.login'))
 
 
 @auth.route('/setup', methods=['GET', 'POST'])
