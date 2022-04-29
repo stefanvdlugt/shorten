@@ -3,6 +3,11 @@
 {% block content %}
 <section class="section">
 <h1 class="title">Add shortened URL</h1>
+{% with messages = get_flashed_messages(category_filter=["add_url_error"]) %}
+{% for message in messages %}
+<div class="notification is-danger">{{ message }}</div>
+{% endfor %}
+{% endwith %}
 <form action="" method="post" class="addurlform">
     {{ form.hidden_tag() }}
     {{ render_field_full(form.dest) }}

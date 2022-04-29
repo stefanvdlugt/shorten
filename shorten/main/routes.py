@@ -14,7 +14,6 @@ def index():
     if form.validate_on_submit():
         su = ShortenedURL()
         su.dest = form.dest.data
-        slug=''
         if form.custom.data == 'random':
             # try generating a random slug
             chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -24,15 +23,16 @@ def index():
                     break
             else:
                 flash('A random slug could not be generated. Please try again'
-                      ' or use a custom slug')
+                      ' or use a custom slug', 'add_url_error')
+                slug = ''
         else:
             slug = form.customurl.data
-        su.slug = slug
-        su.creation_date = datetime.utcnow()
-        db.session.add(su)
-        db.session.commit()
-        return redirect(url_for('main.index'))
+        if slug:
+            su.slug = slug
+            su.creation_date = datetime.utcnow()
+            db.session.add(su)
+            db.session.commit()
+            return redirect(url_for('main.index'))
     urls = ShortenedURL.query.order_by(ShortenedURL.creation_date.desc()).all()
-    print("Hoi")
     return render_template('index.html', form=form, urls=urls)
 
