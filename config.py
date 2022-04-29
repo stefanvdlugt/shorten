@@ -25,7 +25,8 @@ def get_secret_key():
 
                             
 class Config(object):
-    SERVER_NAME = os.environ.get('SERVER_NAME')
+    SERVER_NAME = os.environ.get('SERVER_NAME') or 'localhost:5000'
+    BASE_URL = os.environ.get('BASE_URL') or ''
 
     SECRET_KEY = get_secret_key()
 

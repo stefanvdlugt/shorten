@@ -14,13 +14,14 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    prefix = app.config['BASE_URL']
+
     from .main import main
-    app.register_blueprint(main)
+    app.register_blueprint(main, url_prefix=prefix)
 
     from .auth import auth
-    app.register_blueprint(auth, url_prefix='/auth')
+    app.register_blueprint(auth, url_prefix=prefix+'/auth')
 
-    
     db.init_app(app)
     login.init_app(app)
     migrate.init_app(app, db)

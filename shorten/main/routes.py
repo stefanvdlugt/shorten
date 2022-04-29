@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, abort
+from flask import render_template, redirect, url_for, flash, abort, current_app
 from flask_login import login_required
 import random
 from shorten import db
@@ -34,7 +34,10 @@ def index():
             db.session.commit()
             return redirect(url_for('main.index'))
     urls = ShortenedURL.query.order_by(ShortenedURL.creation_date.desc()).all()
-    return render_template('index.html', form=form, urls=urls)
+    base = current_app.config['SERVER_NAME'] + current_app.config['BASE_URL']
+    if base[-1] != '/':
+        base += '/'
+    return render_template('index.html', form=form, urls=urls, base=base)
 
 @main.route('/<slug>')
 def forward(slug):

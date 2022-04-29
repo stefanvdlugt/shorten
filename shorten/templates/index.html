@@ -15,9 +15,7 @@
     <div class="field" id="customurl-wrapper" {% if form.custom.data=="random" %} style="display:none;" {% endif%}>
         <div class="field has-addons">
         <p class="control">
-            <a class="button is-static" id="customurl-ext">
-                example.com/
-            </a>
+            <a class="button is-static" id="customurl-ext">{{ base }}</a>
         </p>
         <p class="control">
             {% if form.customurl.errors %}
