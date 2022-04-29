@@ -9,6 +9,9 @@ class URLForm(FlaskForm):
     customurl = StringField('Custom slug')
     submit = SubmitField('Submit')
 
+    def validate_dest(form, field):
+        if not any(field.data.startswith(s) for s in ['http://', 'https://']):
+            raise ValidationError("Not a valid HTTP/HTTPS URL.")
 
     def validate_customurl(form, field):
         if form.custom.data == 'manual':
