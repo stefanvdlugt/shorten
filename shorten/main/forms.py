@@ -26,6 +26,8 @@ class URLForm(FlaskForm):
                     'The following characters are allowed:'
                     'A-Z, a-z, 0-9, ._-'
                 ))
+            if ShortenedURL.query.filter_by(slug=field.data).count() > 0:
+                raise ValidationError('That shortened URL already exists!')
 
 class DeleteURLForm(FlaskForm):
     slug = HiddenField(validators=[DataRequired()])
