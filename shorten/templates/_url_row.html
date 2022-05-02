@@ -1,4 +1,5 @@
 <tr>
+    <td>{{ box(class_="urlcheckbox") }}</td>
     <td>
         <a title="Copy" class="copy-url" data-url="{{ url_for('main.forward', slug=u.slug, _external=True) }}">
             <span class="icon has-text-grey">
@@ -9,7 +10,13 @@
     </td>
     <td><span class="has-text-grey-light">{{ base }}</span>{{ u.slug }}</td>
     <td>{{ u.dest }}</td>
-    <td>{{ box(class_="urlcheckbox") }}</td>
+    <td>
+        <a title="Edit" class="edit-url" data-slug="{{ u.slug }}" data-dest="{{ u.dest }}">
+            <span class="icon has-text-info">
+                <i class="fas fa-edit"></i>
+            </span>
+        </a>
+    </td>
     <td>
         <a title="Delete" class="delete-url" data-slug="{{ u.slug }}">
             <span class="icon has-text-danger">

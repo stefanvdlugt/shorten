@@ -11,6 +11,7 @@
 <form action="" method="post" class="addurlform">
     {{ form.hidden_tag() }}
     {{ render_field_full(form.dest) }}
+    {{ form.custom.label(class_="label") }}
     {{ render_field_full(form.custom) }}
     <div class="field" id="customurl-wrapper" {% if form.custom.data=="random" %} style="display:none;" {% endif%}>
         <div class="field has-addons">
@@ -49,10 +50,11 @@
         <table class="table is-hoverable is-fullwidth">
             <thead>
                 <tr>
+                    <th style="width:.1%;"><input type="checkbox" id="selectall"></th>
                     <th style="width:.1%;"></th>
                     <th>Shortened URL</th>
                     <th>Destination</th>
-                    <th style="width:.1%;"><input type="checkbox" id="selectall"></th>
+                    <th style="width:.1%;"></th>
                     <th style="width:.1%;">
                         <span hidden id="span-btn-multidelete">{{ msform.submit }}</span>
                         <a hidden title="Delete selected" id="multidelete">
@@ -70,6 +72,46 @@
         </table>
     </form>
 </section>
+<button class="modal-url-edit-trigger">
+    Open modal
+</button>
+
+<div id="modal-url-edit" class="modal {% if editform.errors %}is-active{% endif %}">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <div class="box">
+            <form action="" method="post" id="editurlform">
+                {{ editform.hidden_tag() }}
+                {{ render_field_full(editform.dest) }}
+
+                <div class="field has-addons">
+                    <p class="control">
+                        <a class="button is-static" id="customurl-ext">{{ base }}</a>
+                    </p>
+                    <p class="control">
+                        {% if editform.newslug.errors %}
+                        {{ editform.newslug(class_="input is-danger") }}
+                        {% else %}
+                        {{ editform.newslug(class_="input") }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="field">
+                    {% for e in editform.newslug.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    {{ editform.submit(class_="is-primary button") }}
+                    <button class="button modal-cancel" type="button">Cancel</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+</div>
 
 <form hidden action="" method="post" id="delurlform">
     {{ delform.csrf_token() }}
@@ -173,6 +215,26 @@
             lastChecked = this;
         });
     });
+    
+    $(".modal-url-edit-trigger").click(function(){
+        $("#modal-url-edit").addClass("is-active");
+    });
+    $(".modal-background, .modal-close, .modal-cancel").click(function(){
+        $(".modal").removeClass("is-active");
+    });
+    $(document).keydown(function(e){
+        if (e.which == 27) {
+            $(".modal").removeClass("is-active");
+        }
+    });
+    $(".edit-url").click(function(){
+        $("#editurlform input[name='oldslug']").val($(this).data("slug"));
+        $("#editurlform input[name='newslug']").val($(this).data("slug"));
+        $("#editurlform input[name='dest']").val($(this).data("dest"));
+        $("#modal-url-edit").addClass("is-active");
+    });
+
+
 
     
 </script>

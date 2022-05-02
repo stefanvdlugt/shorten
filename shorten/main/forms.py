@@ -7,7 +7,7 @@ import re
 
 class URLForm(FlaskForm):
     dest = StringField('Destination', validators=[DataRequired()])
-    custom = RadioField('URL type', default='random', choices=[('random','Random'), ('manual','Custom')])
+    custom = RadioField('Shortened URL', default='random', choices=[('random','Random'), ('manual','Custom')])
     customurl = StringField('Custom slug')
     submit = SubmitField('Submit')
 
@@ -38,6 +38,35 @@ class DeleteURLForm(FlaskForm):
         slug = field.data
         if ShortenedURL.query.filter_by(slug=slug).count() == 0:
             raise ValidationError("This URL does not exist.")
+
+class EditURLForm(FlaskForm):
+    dest = StringField('Destination')
+    oldslug = HiddenField(validators=[DataRequired()])
+    newslug = StringField('Slug')
+    submit = SubmitField('Save changes')
+
+    def validate_oldslug(form, field):
+        slug = field.data
+        if ShortenedURL.query.filter_by(slug=slug).count() == 0:
+            raise ValidationError("This URL does not exist.")
+
+    def validate_dest(form, field):
+        if not any(field.data.startswith(s) for s in ['http://', 'https://']):
+            raise ValidationError("Not a valid HTTP/HTTPS URL.")
+
+    def validate_newslug(form, field):
+        if not field.data:
+            raise ValidationError(
+                'Insert a slug'
+            )
+        if re.search(r'^[A-Za-z0-9\.\-\_]+$', field.data) is None:
+            raise ValidationError((
+                'The following characters are allowed:'
+                'A-Z, a-z, 0-9, ._-'
+            ))
+        if form.oldslug.data != form.newslug.data and ShortenedURL.query.filter_by(slug=field.data).count() > 0:
+            raise ValidationError('That shortened URL already exists!')
+
 
 class MultiCheckboxField(SelectMultipleField):
     """

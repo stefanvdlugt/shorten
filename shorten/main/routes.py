@@ -4,7 +4,7 @@ import random
 from shorten import db
 from shorten.models import ShortenedURL
 from . import main
-from .forms import URLForm, DeleteURLForm, MultiSelectURLForm
+from .forms import EditURLForm, URLForm, DeleteURLForm, MultiSelectURLForm
 from datetime import datetime
 
 @main.route('/', methods=['GET','POST'])
@@ -15,8 +15,18 @@ def index():
     delform = DeleteURLForm(prefix='delete--')
     msform = MultiSelectURLForm(prefix='multi--')
     msform.boxes.choices = [(u.slug,u.slug) for u in urls]
+    editform = EditURLForm()
 
-    if msform.submit.data and msform.validate_on_submit():
+    if editform.submit.data:
+        if editform.validate_on_submit():
+            su = ShortenedURL.query.filter_by(slug=editform.oldslug.data).first()
+            su.slug = editform.newslug.data
+            su.dest = editform.dest.data
+            db.session.commit()
+            return redirect(url_for('main.index'))
+
+
+    elif msform.submit.data and msform.validate_on_submit():
         error=False
         for slug in msform.boxes.data:
             su = ShortenedURL.query.filter_by(slug=slug).first()
@@ -31,7 +41,7 @@ def index():
 
         return redirect(url_for('main.index'))
 
-    if delform.slug.data:
+    elif delform.slug.data:
         if delform.validate_on_submit():
             su = ShortenedURL.query.filter_by(slug=delform.slug.data).first()
             db.session.delete(su)
@@ -64,7 +74,7 @@ def index():
     if base[-1] != '/':
         base += '/'
     return render_template('index.html', form=form, delform=delform,
-                           msform=msform, urls=urls, base=base, zip=zip)
+                           msform=msform, editform=editform, urls=urls, base=base, zip=zip)
 
 @main.route('/<slug>')
 def forward(slug):
