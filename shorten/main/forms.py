@@ -24,7 +24,7 @@ class URLForm(FlaskForm):
                 )
             if re.search(r'^[A-Za-z0-9\.\-\_]+$', field.data) is None:
                 raise ValidationError((
-                    'The following characters are allowed:'
+                    'The following characters are allowed: '
                     'A-Z, a-z, 0-9, ._-'
                 ))
             if ShortenedURL.query.filter_by(slug=field.data).count() > 0:
@@ -61,7 +61,7 @@ class EditURLForm(FlaskForm):
             )
         if re.search(r'^[A-Za-z0-9\.\-\_]+$', field.data) is None:
             raise ValidationError((
-                'The following characters are allowed:'
+                'The following characters are allowed: '
                 'A-Z, a-z, 0-9, ._-'
             ))
         if form.oldslug.data != form.newslug.data and ShortenedURL.query.filter_by(slug=field.data).count() > 0:
