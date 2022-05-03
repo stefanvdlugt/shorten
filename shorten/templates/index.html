@@ -81,19 +81,20 @@
                 {{ editform.hidden_tag() }}
                 {{ render_field_full(editform.dest) }}
 
-                <div class="field has-addons">
-                    <p class="control">
-                        <a class="button is-static" id="customurl-ext">{{ base }}</a>
-                    </p>
-                    <p class="control">
-                        {% if editform.newslug.errors %}
-                        {{ editform.newslug(class_="input is-danger") }}
-                        {% else %}
-                        {{ editform.newslug(class_="input") }}
-                        {% endif %}
-                    </p>
-                </div>
                 <div class="field">
+                    {{ editform.newslug.label(class_="label") }}
+                    <div class="field has-addons">
+                        <p class="control">
+                            <a class="button is-static" id="customurl-ext">{{ base }}</a>
+                        </p>
+                        <p class="control">
+                            {% if editform.newslug.errors %}
+                            {{ editform.newslug(class_="input is-danger") }}
+                            {% else %}
+                            {{ editform.newslug(class_="input") }}
+                            {% endif %}
+                        </p>
+                    </div>
                     {% for e in editform.newslug.errors %}
                     <p class="help is-danger">{{ e }}</p>
                     {% endfor %}

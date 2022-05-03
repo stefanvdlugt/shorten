@@ -42,7 +42,7 @@ class DeleteURLForm(FlaskForm):
 class EditURLForm(FlaskForm):
     dest = StringField('Destination')
     oldslug = HiddenField(validators=[DataRequired()])
-    newslug = StringField('Slug')
+    newslug = StringField('Shortened URL')
     submit = SubmitField('Save changes')
 
     def validate_oldslug(form, field):
