@@ -39,5 +39,5 @@ class ShortenedURL(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     slug = db.Column(db.String(32), index=True, unique=True)
     dest = db.Column(db.String(2000))
-    creation_date = db.Column(db.DateTime())
+    modification_date = db.Column(db.DateTime())
 

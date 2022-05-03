@@ -11,7 +11,7 @@ from datetime import datetime
 @login_required
 def index():
     form = URLForm()
-    urls = ShortenedURL.query.order_by(ShortenedURL.creation_date.desc()).all()
+    urls = ShortenedURL.query.order_by(ShortenedURL.modification_date.desc()).all()
     delform = DeleteURLForm(prefix='delete--')
     msform = MultiSelectURLForm(prefix='multi--')
     msform.boxes.choices = [(u.slug,u.slug) for u in urls]
@@ -22,6 +22,7 @@ def index():
             su = ShortenedURL.query.filter_by(slug=editform.oldslug.data).first()
             su.slug = editform.newslug.data
             su.dest = editform.dest.data
+            su.modification_date = datetime.utcnow()
             db.session.commit()
             return redirect(url_for('main.index'))
 
@@ -66,7 +67,7 @@ def index():
             slug = form.customurl.data
         if slug:
             su.slug = slug
-            su.creation_date = datetime.utcnow()
+            su.modification_date = datetime.utcnow()
             db.session.add(su)
             db.session.commit()
             return redirect(url_for('main.index'))
